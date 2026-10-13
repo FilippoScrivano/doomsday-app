@@ -1,91 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Doomsday Algorithm Mastery Trainer</title>
-  <meta name="theme-color" content="#0b0f19">
+  <title>Doomsday Trainer</title>
+  <meta name="theme-color" content="#0b0d17">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  
   <style>
     :root {
-      --bg: #07090e;
-      --surface: rgba(18, 24, 38, 0.75);
-      --surface-border: rgba(255, 255, 255, 0.08);
-      --primary: #6366f1;
-      --primary-glow: rgba(99, 102, 241, 0.45);
-      --cyan-glow: rgba(56, 189, 248, 0.4);
+      --bg: #090a10;
+      --card-bg: rgba(22, 26, 44, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.4);
+      --accent-hover: #4f46e5;
       --success: #10b981;
-      --success-glow: rgba(16, 185, 129, 0.4);
+      --success-glow: rgba(16, 185, 129, 0.5);
       --danger: #ef4444;
-      --danger-glow: rgba(239, 68, 68, 0.45);
-      --amber: #f59e0b;
-      --text-main: #f9fafb;
+      --danger-glow: rgba(239, 68, 68, 0.5);
+      --text: #f8fafc;
       --text-muted: #94a3b8;
     }
 
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
 
     body {
-      background: radial-gradient(circle at 50% 0%, #151b30 0%, #07090e 70%);
-      color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      min-height: 100vh;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at 50% 10%, #1e1b4b 0%, var(--bg) 70%);
+      color: var(--text);
       display: flex;
       flex-direction: column;
       align-items: center;
+      min-height: 100vh;
       padding: 16px;
       overflow-x: hidden;
     }
 
-    .app-container {
+    .header {
       width: 100%;
-      max-width: 480px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      margin: 0 auto;
-    }
-
-    header {
+      max-width: 440px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 4px 8px;
+      margin-bottom: 12px;
+      padding: 0 4px;
     }
 
-    .title-area h1 {
-      font-size: 1.25rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #e0e7ff, #818cf8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .title-group {
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .header-controls {
+    .logo-text {
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #a5b4fc, #e0e7ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .actions {
       display: flex;
       gap: 8px;
     }
 
     .icon-btn {
-      background: var(--surface);
-      border: 1px solid var(--surface-border);
-      color: var(--text-muted);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
       width: 38px;
       height: 38px;
       border-radius: 12px;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
@@ -95,144 +89,86 @@
     }
 
     .icon-btn:hover {
-      color: #fff;
-      border-color: rgba(255, 255, 255, 0.25);
-      box-shadow: 0 0 14px rgba(255, 255, 255, 0.1);
-      transform: translateY(-1px);
+      border-color: rgba(99, 102, 241, 0.5);
+      box-shadow: 0 0 12px var(--accent-glow);
     }
 
-    .mode-bar {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      background: rgba(15, 20, 32, 0.85);
-      border: 1px solid var(--surface-border);
+    .icon-btn.active-hint {
+      border-color: #facc15;
+      box-shadow: 0 0 12px rgba(250, 204, 21, 0.4);
+      color: #fef08a;
+      background: rgba(250, 204, 21, 0.1);
+    }
+
+    .mode-selector {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      background: rgba(15, 18, 30, 0.7);
+      border: 1px solid var(--card-border);
       border-radius: 14px;
-      padding: 4px;
+      padding: 3px;
       gap: 4px;
-      backdrop-filter: blur(10px);
+      margin-bottom: 14px;
     }
 
     .mode-btn {
+      flex: 1;
       background: transparent;
       border: none;
       color: var(--text-muted);
       padding: 8px 4px;
-      font-size: 0.72rem;
+      font-size: 0.8rem;
       font-weight: 600;
       border-radius: 10px;
       cursor: pointer;
-      text-align: center;
       transition: all 0.2s;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
     .mode-btn.active {
-      background: var(--primary);
-      color: #ffffff;
-      box-shadow: 0 0 12px var(--primary-glow);
-    }
-
-    /* Stats strip */
-    .stats-strip {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-
-    .stat-pill {
-      background: var(--surface);
-      border: 1px solid var(--surface-border);
-      border-radius: 14px;
-      padding: 8px 6px;
-      text-align: center;
-      backdrop-filter: blur(10px);
-    }
-
-    .stat-pill .val {
-      font-size: 1.05rem;
-      font-weight: 700;
+      background: var(--accent);
       color: #fff;
+      box-shadow: 0 0 14px var(--accent-glow);
     }
 
-    .stat-pill .lbl {
-      font-size: 0.65rem;
-      font-weight: 600;
+    .stats-row {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .stat-card {
+      flex: 1;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+      padding: 10px;
+      border-radius: 14px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--text-muted);
     }
 
-    .card-display {
-      position: relative;
-      background: linear-gradient(145deg, rgba(24, 31, 52, 0.75), rgba(13, 17, 28, 0.85));
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 24px;
-      padding: 24px 20px;
-      text-align: center;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
-      overflow: hidden;
-    }
-
-    .card-display::before {
-      content: "";
-      position: absolute;
-      top: -30px;
-      left: 20%;
-      right: 20%;
-      height: 60px;
-      background: var(--primary-glow);
-      filter: blur(40px);
-      pointer-events: none;
-    }
-
-    .badge-row {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .chip {
-      font-size: 0.7rem;
+    .stat-val {
+      font-size: 1.15rem;
       font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 20px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      border: 1px solid transparent;
-    }
-
-    .chip-century {
-      background: rgba(99, 102, 241, 0.15);
-      color: #a5b4fc;
-      border-color: rgba(99, 102, 241, 0.3);
-    }
-
-    .chip-leap {
-      background: rgba(245, 158, 11, 0.15);
-      color: #fcd34d;
-      border-color: rgba(245, 158, 11, 0.3);
-    }
-
-    .date-heading {
-      font-size: 1.85rem;
-      font-weight: 800;
-      letter-spacing: -0.01em;
-      color: #ffffff;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-      margin: 6px 0;
+      margin-top: 2px;
     }
 
     .timer-bar-container {
       width: 100%;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 4px;
-      margin-top: 14px;
+      max-width: 440px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      margin-bottom: 14px;
       overflow: hidden;
       display: none;
     }
@@ -240,831 +176,572 @@
     .timer-bar {
       height: 100%;
       width: 100%;
-      background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
+      background: linear-gradient(90deg, #6366f1, #ec4899);
       transition: width 0.1s linear;
     }
 
-    .days-grid {
+    .date-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
+      width: 100%;
+      max-width: 440px;
+      border-radius: 24px;
+      padding: 24px 16px;
+      text-align: center;
+      margin-bottom: 16px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    .date-card-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .date-text {
+      font-size: 1.95rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+
+    .hints-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .hint-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+    }
+
+    .hint-badge.leap {
+      background: rgba(168, 85, 247, 0.15);
+      border-color: rgba(168, 85, 247, 0.3);
+      color: #d8b4fe;
+    }
+
+    .hint-badge.century {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: rgba(56, 189, 248, 0.3);
+      color: #7dd3fc;
+    }
+
+    .grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 9px;
       width: 100%;
+      max-width: 440px;
     }
 
-    .btn-day {
-      position: relative;
-      background: rgba(20, 27, 43, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: #e2e8f0;
-      padding: 13px 18px;
-      font-size: 1.02rem;
+    button.btn-day {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+      color: var(--text);
+      padding: 14px 16px;
+      font-size: 1.05rem;
       font-weight: 600;
       border-radius: 16px;
       cursor: pointer;
+      position: relative;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
     }
 
-    .btn-day .kbd-hint {
-      font-size: 0.7rem;
-      padding: 2px 7px;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--text-muted);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      font-weight: 500;
-    }
-
-    /* Glowing hover & touch feedback */
-    .btn-day:hover {
-      background: rgba(30, 41, 69, 0.85);
-      border-color: rgba(99, 102, 241, 0.65);
-      color: #ffffff;
-      box-shadow: 0 0 18px var(--primary-glow), inset 0 0 8px rgba(99, 102, 241, 0.2);
+    button.btn-day:hover:not(:disabled) {
+      border-color: rgba(99, 102, 241, 0.6);
+      background: rgba(30, 35, 60, 0.85);
+      box-shadow: 0 0 15px var(--accent-glow), inset 0 0 8px rgba(99, 102, 241, 0.2);
       transform: translateY(-2px);
     }
 
-    .btn-day:active {
+    button.btn-day:active:not(:disabled) {
       transform: scale(0.98);
     }
 
-    .btn-day.correct {
-      background: linear-gradient(135deg, #059669, #10b981) !important;
-      border-color: #34d399 !important;
-      color: #ffffff !important;
-      box-shadow: 0 0 24px var(--success-glow) !important;
+    button.btn-day.correct {
+      background: rgba(16, 185, 129, 0.2) !important;
+      border-color: var(--success) !important;
+      color: #6ee7b7 !important;
+      box-shadow: 0 0 20px var(--success-glow) !important;
     }
 
-    .btn-day.wrong {
-      background: linear-gradient(135deg, #dc2626, #ef4444) !important;
-      border-color: #f87171 !important;
-      color: #ffffff !important;
-      box-shadow: 0 0 24px var(--danger-glow) !important;
+    button.btn-day.wrong {
+      background: rgba(239, 68, 68, 0.2) !important;
+      border-color: var(--danger) !important;
+      color: #fca5a5 !important;
+      box-shadow: 0 0 20px var(--danger-glow) !important;
     }
 
-    .guided-box {
-      background: rgba(15, 22, 38, 0.85);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      border-radius: 18px;
-      padding: 16px;
-      display: none;
-      flex-direction: column;
-      gap: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    .shortcut-hint {
+      font-size: 0.75rem;
+      padding: 3px 7px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 6px;
+      color: var(--text-muted);
     }
 
-    .guided-step-title {
-      font-size: 0.82rem;
+    .feedback {
+      margin-top: 14px;
+      font-size: 1.15rem;
       font-weight: 700;
-      color: #a5b4fc;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      min-height: 28px;
+      text-align: center;
     }
 
-    .guided-question {
+    .next-btn {
+      width: 100%;
+      max-width: 440px;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: white;
+      border: none;
+      padding: 15px;
       font-size: 1.05rem;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .guided-options {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-      gap: 8px;
-    }
-
-    .guided-opt-btn {
-      background: var(--surface);
-      border: 1px solid var(--surface-border);
-      color: var(--text-main);
-      padding: 10px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      border-radius: 12px;
+      font-weight: 700;
+      border-radius: 16px;
+      margin-top: 14px;
       cursor: pointer;
+      display: none;
+      box-shadow: 0 4px 18px var(--accent-glow);
       transition: all 0.2s;
     }
 
-    .guided-opt-btn:hover {
-      border-color: var(--primary);
-      box-shadow: 0 0 12px var(--primary-glow);
+    .next-btn:hover {
+      box-shadow: 0 6px 24px var(--accent-glow);
+      transform: translateY(-1px);
     }
 
-    .breakdown-card {
-      background: rgba(16, 22, 36, 0.8);
-      border: 1px solid var(--surface-border);
-      border-radius: 18px;
-      padding: 16px;
-      font-size: 0.88rem;
-      line-height: 1.6;
-      color: #cbd5e1;
-      display: none;
-      animation: fadeIn 0.25s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .breakdown-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-      font-weight: 700;
-      color: #818cf8;
-      font-size: 0.9rem;
-    }
-
-    .next-action-btn {
-      width: 100%;
-      background: linear-gradient(135deg, #4f46e5, #6366f1);
-      color: white;
-      border: none;
-      padding: 16px;
-      font-size: 1.05rem;
-      font-weight: 700;
-      border-radius: 18px;
-      cursor: pointer;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      box-shadow: 0 6px 20px var(--primary-glow);
-      transition: all 0.2s ease;
-    }
-
-    .next-action-btn:hover {
-      box-shadow: 0 0 28px var(--primary-glow);
-      transform: translateY(-2px);
-    }
-
-    .modal-backdrop {
+    .modal-overlay {
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(6px);
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 99;
       padding: 16px;
-      animation: fadeIn 0.2s ease-out;
+      z-index: 100;
     }
 
-    .modal-content {
-      background: #0f1627;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 24px;
-      max-width: 520px;
+    .modal-card {
+      background: #141726;
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
       width: 100%;
+      max-width: 480px;
       max-height: 85vh;
       overflow-y: auto;
-      padding: 24px;
-      color: var(--text-main);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      padding: 22px;
+      color: var(--text);
     }
 
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
+    .modal-card h3 {
+      margin-top: 0;
+      color: #a5b4fc;
     }
 
-    .modal-title {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: #e0e7ff;
-    }
-
-    .ref-section {
-      margin-bottom: 20px;
-    }
-
-    .ref-section h3 {
-      font-size: 0.92rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #818cf8;
-      margin-bottom: 8px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding-bottom: 4px;
-    }
-
-    .ref-table {
+    .modal-card table {
       width: 100%;
       border-collapse: collapse;
+      margin: 10px 0 16px 0;
       font-size: 0.85rem;
     }
 
-    .ref-table th, .ref-table td {
+    .modal-card th, .modal-card td {
+      border: 1px solid rgba(255, 255, 255, 0.08);
       padding: 6px 8px;
       text-align: left;
     }
 
-    .ref-table th {
-      color: var(--text-muted);
-      font-weight: 600;
+    .modal-card th {
+      background: rgba(255, 255, 255, 0.05);
     }
 
-    .ref-table tr:nth-child(even) {
-      background: rgba(255, 255, 255, 0.03);
-    }
-
-    .code-pill {
-      background: rgba(99, 102, 241, 0.15);
-      color: #c7d2fe;
-      padding: 2px 6px;
-      border-radius: 6px;
-      font-family: monospace;
-      font-size: 0.88rem;
+    .modal-close-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--accent);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <div class="app-container">
-    <header>
-      <div class="title-area">
-        <h1>⚡ Doomsday Master</h1>
-      </div>
-      <div class="header-controls">
-        <button class="icon-btn" id="sound-btn" title="Toggle Sound" aria-label="Toggle Sound">🔊</button>
-        <button class="icon-btn" id="cheat-btn" title="Conway Cheat Sheet" aria-label="Reference sheet">📖</button>
-      </div>
-    </header>
-
-    <!-- Game Mode Bar -->
-    <nav class="mode-bar">
-      <button class="mode-btn active" data-mode="classic">Classic</button>
-      <button class="mode-btn" data-mode="modern">20th/21st</button>
-      <button class="mode-btn" data-mode="timeattack">60s Blitz</button>
-      <button class="mode-btn" data-mode="guided">Step Drill</button>
-    </nav>
-
-    <!-- Stats Strip -->
-    <section class="stats-strip">
-      <div class="stat-pill">
-        <div class="val" id="stat-score">0/0</div>
-        <div class="lbl">Score</div>
-      </div>
-      <div class="stat-pill">
-        <div class="val" id="stat-streak">0 🔥</div>
-        <div class="lbl">Streak</div>
-      </div>
-      <div class="stat-pill">
-        <div class="val" id="stat-best">0</div>
-        <div class="lbl">Best</div>
-      </div>
-      <div class="stat-pill">
-        <div class="val" id="stat-speed">0.0s</div>
-        <div class="lbl">Avg Speed</div>
-      </div>
-    </section>
-
-    <main class="card-display">
-      <div class="badge-row">
-        <span class="chip chip-century" id="chip-century">2000s Anchor: Tue</span>
-        <span class="chip chip-leap" id="chip-leap" style="display: none;">Leap Year</span>
-      </div>
-      <div class="date-heading" id="target-date">Loading...</div>
-      
-      <!-- Time Attack Bar -->
-      <div class="timer-bar-container" id="timer-container">
-        <div class="timer-bar" id="timer-bar"></div>
-      </div>
-    </main>
-
-    <!-- Guided step-by-step box -->
-    <div class="guided-box" id="guided-box">
-      <div class="guided-step-title" id="guided-step-title">Step 1 of 4: Century Anchor</div>
-      <div class="guided-question" id="guided-question">What is the century anchor?</div>
-      <div class="guided-options" id="guided-options"></div>
+  <div class="header">
+    <div class="title-group">
+      <span style="font-size:1.4rem;">📅</span>
+      <span class="logo-text">Doomsday Trainer</span>
     </div>
-
-    <!-- Regular 7-Day Buttons Grid -->
-    <div class="days-grid" id="days-grid"></div>
-
-    <!-- Step-by-Step Breakdown -->
-    <article class="breakdown-card" id="breakdown-card">
-      <div class="breakdown-header">
-        <span>Conway Breakdown</span>
-        <span style="font-size:0.75rem; color:var(--text-muted)">Press [Space] for next</span>
-      </div>
-      <div id="breakdown-content"></div>
-    </article>
-
-    <!-- Next Question Button -->
-    <button class="next-action-btn" id="next-btn">Next Date ➔</button>
+    <div class="actions">
+      <button class="icon-btn" id="hint-toggle" title="Attiva/Disattiva Aiuti" onclick="toggleHints()">💡</button>
+      <button class="icon-btn" id="sound-toggle" title="Attiva/Disattiva Audio" onclick="toggleAudio()">🔊</button>
+      <button class="icon-btn" title="Tutorial / Cheat Sheet" onclick="openCheatSheet()">📖</button>
+    </div>
   </div>
 
-  <div class="modal-backdrop" id="modal-cheat">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="modal-title">📖 Conway Rules Cheat Sheet</div>
-        <button class="icon-btn" id="close-modal" aria-label="Close modal">✕</button>
-      </div>
+  <div class="mode-selector">
+    <button class="mode-btn active" id="mode-classic" onclick="setMode('classic')">Classico</button>
+    <button class="mode-btn" id="mode-modern" onclick="setMode('modern')">1900-2099</button>
+    <button class="mode-btn" id="mode-blitz" onclick="setMode('blitz')">Blitz 60s</button>
+  </div>
 
-      <div class="ref-section">
-        <h3>1. Century Anchors (Cycle of 400 years)</h3>
-        <table class="ref-table">
-          <tr><th>Century</th><th>Anchor Day</th><th>Mnemonic</th></tr>
-          <tr><td>1600, 2000, 2400</td><td><b>Tuesday</b> (2)</td><td>Y2K / Leap Century</td></tr>
-          <tr><td>1700, 2100, 2500</td><td><b>Sunday</b> (0)</td><td>-2 days</td></tr>
-          <tr><td>1800, 2200, 2600</td><td><b>Friday</b> (5)</td><td>-2 days</td></tr>
-          <tr><td>1900, 2300, 2700</td><td><b>Wednesday</b> (3)</td><td>-2 days (We-in-dis-day)</td></tr>
-        </table>
-      </div>
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Punteggio</div>
+      <div class="stat-val" id="score-text">0 / 0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Precisione</div>
+      <div class="stat-val" id="pct-text">0%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Serie (Streak)</div>
+      <div class="stat-val" id="streak-text">0 🔥</div>
+    </div>
+  </div>
 
-      <div class="ref-section">
-        <h3>2. Year Offset Formula (AA = Last 2 digits)</h3>
-        <p style="font-size: 0.88rem; margin-bottom: 6px;">
-          Formula: <span class="code-pill">AA / 12 + AA % 12 + (AA % 12) / 4</span>
-        </p>
-        <p style="font-size: 0.8rem; color: var(--text-muted)">
-          Add this sum (modulo 7) to your Century Anchor to get the year's Doomsday.
-        </p>
-      </div>
+  <div class="timer-bar-container" id="timer-container">
+    <div class="timer-bar" id="timer-bar"></div>
+  </div>
 
-      <div class="ref-section">
-        <h3>3. Month Anchors (Always share the year's Doomsday)</h3>
-        <table class="ref-table">
-          <tr><th>Month</th><th>Doomsday Date</th><th>Mnemonic</th></tr>
-          <tr><td>Jan</td><td>Jan 3 (Jan 4 in leap)</td><td>3rd / 4th year entry</td></tr>
-          <tr><td>Feb</td><td>Feb 28 (Feb 29 in leap)</td><td>Last day of Feb</td></tr>
-          <tr><td>Mar</td><td>March 14</td><td>Pi Day (3/14)</td></tr>
-          <tr><td>Apr, Jun, Aug, Oct, Dec</td><td>4/4, 6/6, 8/8, 10/10, 12/12</td><td>Even match</td></tr>
-          <tr><td>May, Sep</td><td>May 9, Sep 5</td><td>"9 to 5" (5/9 and 9/5)</td></tr>
-          <tr><td>Jul, Nov</td><td>Jul 11, Nov 7</td><td>"7-Eleven" (7/11 and 11/7)</td></tr>
-        </table>
-      </div>
+  <div class="date-card">
+    <div class="date-card-label">Che giorno della settimana è?</div>
+    <div class="date-text" id="date-label">Caricamento...</div>
+    
+    <div class="hints-container" id="hints-container" style="display: none;">
+      <span class="hint-badge century" id="hint-century">Secolo: -</span>
+      <span class="hint-badge leap" id="hint-leap" style="display: none;">Anno Bisestile</span>
+    </div>
+  </div>
 
-      <div class="ref-section">
-        <h3>4. Keyboard Shortcuts</h3>
-        <p style="font-size: 0.85rem; color: var(--text-muted)">
-          • Keys <span class="code-pill">1</span> - <span class="code-pill">7</span> : Pick Sunday through Saturday.<br>
-          • Keys <span class="code-pill">D, L, M, M, G, V, S</span> : Day initials.<br>
-          • Key <span class="code-pill">Space</span> : Go to next date.
-        </p>
-      </div>
+  <div class="grid" id="buttons-container"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn" onclick="nextQuestion()">Data Successiva → (o Spazio)</button>
+
+  <!-- Cheat Sheet Modal -->
+  <div class="modal-overlay" id="modal-cheat">
+    <div class="modal-card">
+      <h3>📖 Guida & Cheat Sheet Doomsday</h3>
+      
+      <b style="font-size:0.9rem; color:#a5b4fc;">1. Giorni base dei secoli:</b>
+      <table>
+        <tr><th>Secolo</th><th>Giorno base</th></tr>
+        <tr><td>1600, 2000, 2400</td><td>Martedì (2)</td></tr>
+        <tr><td>1700, 2100, 2500</td><td>Domenica (0)</td></tr>
+        <tr><td>1800, 2200, 2600</td><td>Venerdì (5)</td></tr>
+        <tr><td>1900, 2300, 2700</td><td>Mercoledì (3)</td></tr>
+      </table>
+
+      <b style="font-size:0.9rem; color:#a5b4fc;">2. Il calcolo sull'anno (ultime due cifre):</b>
+      <p style="font-size: 0.85rem; background: rgba(255,255,255,0.04); padding: 12px; border-radius: 8px; line-height: 1.5;">
+        Prendi le ultime due cifre dell'anno (ad esempio, per il 19<b>75</b> usa solo il 75) e trova questi 3 numeri:<br><br>
+        <b>A. Quoziente del 12:</b> Quante volte il 12 sta nel numero? (75 / 12 = <b>6</b>)<br>
+        <b>B. Resto del 12:</b> Qual è il resto di questa divisione? (75 - 72 = <b>3</b>)<br>
+        <b>C. Quoziente del 4:</b> Quante volte il 4 sta nel resto appena trovato? (3 / 4 = <b>0</b>)<br><br>
+        <b>Somma i 3 numeri trovati:</b> 6 + 3 + 0 = <b>9</b>.<br>
+        <i>(Sottrai i multipli di 7 per semplificare: 9 - 7 = <b>2</b>).</i><br>
+        Questo è lo scarto! Aggiungi 2 al giorno base del secolo (Mercoledì + 2 = Venerdì).
+      </p>
+
+      <b style="font-size:0.9rem; color:#a5b4fc;">3. Date Doomsday nei mesi:</b>
+      <table>
+        <tr><th>Mese</th><th>Giorno</th><th>Trucco a mente</th></tr>
+        <tr><td>Gennaio</td><td>3 gen (4 se bisestile)</td><td>3 / 4</td></tr>
+        <tr><td>Febbraio</td><td>28 feb (29 se bisestile)</td><td>Ultimo giorno</td></tr>
+        <tr><td>Marzo</td><td>14 marzo</td><td>Pi Day (3.14)</td></tr>
+        <tr><td>Mesi pari (4, 6, 8, 10, 12)</td><td>4/4, 6/6, 8/8, 10/10, 12/12</td><td>Mese e giorno uguali</td></tr>
+        <tr><td>Maggio / Settembre</td><td>9/5 e 5/9</td><td>"Lavoro dalle 9 alle 5"</td></tr>
+        <tr><td>Luglio / Novembre</td><td>11/7 e 7/11</td><td>"Convenience store 7-Eleven"</td></tr>
+      </table>
+
+      <button class="modal-close-btn" onclick="closeCheatSheet()">Ho capito, torna al Quiz</button>
     </div>
   </div>
 
   <script>
-    const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const SHORT_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const MONTHS = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
+    const DAYS = [
+      { name: "Domenica", key: "1" },
+      { name: "Lunedì", key: "2" },
+      { name: "Martedì", key: "3" },
+      { name: "Mercoledì", key: "4" },
+      { name: "Giovedì", key: "5" },
+      { name: "Venerdì", key: "6" },
+      { name: "Sabato", key: "7" }
     ];
-    const CENTURY_ANCHORS = { 0: { name: "Tuesday", val: 2 }, 1: { name: "Sunday", val: 0 }, 2: { name: "Friday", val: 5 }, 3: { name: "Wednesday", val: 3 } };
 
-    // App state
-    let state = {
-      mode: "classic",
-      score: 0,
-      total: 0,
-      streak: 0,
-      bestStreak: 0,
-      soundEnabled: true,
-      answered: false,
-      currentDateObj: null,
-      startTime: 0,
-      totalResponseTime: 0,
-      timerInterval: null,
-      timeLeft: 60,
-      guidedStep: 0,
-      guidedAnswers: {}
-    };
+    const MONTHS_IT = [
+      "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
+      "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"
+    ];
 
-    // Web Audio Synthesizer for rich SFX (zero external audio files)
+    let mode = 'classic';
+    let total = 0;
+    let correct = 0;
+    let streak = 0;
+    let current = null;
+    let answered = false;
+    let soundEnabled = true;
+    let hintsEnabled = false;
+
+    // Blitz Timer state
+    let blitzTimeLeft = 60;
+    let blitzTimerId = null;
+
+    // Web Audio FX
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    function playTone(type) {
-      if (!state.soundEnabled) return;
+    function playTone(freq, type, duration) {
+      if (!soundEnabled || !audioCtx) return;
       if (audioCtx.state === 'suspended') audioCtx.resume();
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch(e) {}
+    }
 
-      const now = audioCtx.currentTime;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
+    function soundSuccess() {
+      playTone(523.25, 'sine', 0.12);
+      setTimeout(() => playTone(659.25, 'sine', 0.18), 90);
+    }
 
-      if (type === "correct") {
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(523.25, now);       // C5
-        osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.1); // E5
-        osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.2); // G5
-        gain.gain.setValueAtTime(0.25, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-        osc.start(now);
-        osc.stop(now + 0.35);
-      } else if (type === "wrong") {
-        osc.type = "sawtooth";
-        osc.frequency.setValueAtTime(220, now);          // A3
-        osc.frequency.exponentialRampToValueAtTime(140, now + 0.25);
-        gain.gain.setValueAtTime(0.3, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-        osc.start(now);
-        osc.stop(now + 0.3);
-      } else if (type === "step") {
-        osc.type = "triangle";
-        osc.frequency.setValueAtTime(440, now);
-        gain.gain.setValueAtTime(0.2, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
-        osc.start(now);
-        osc.stop(now + 0.1);
+    function soundFail() {
+      playTone(220, 'triangle', 0.25);
+    }
+
+    function toggleAudio() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('sound-toggle').innerText = soundEnabled ? '🔊' : '🔇';
+    }
+
+    function toggleHints() {
+      hintsEnabled = !hintsEnabled;
+      const btn = document.getElementById('hint-toggle');
+      const container = document.getElementById('hints-container');
+      
+      if (hintsEnabled) {
+        btn.classList.add('active-hint');
+        container.style.display = 'flex';
+      } else {
+        btn.classList.remove('active-hint');
+        container.style.display = 'none';
       }
     }
 
-    function triggerHaptic(type) {
-      if ("vibrate" in navigator) {
-        if (type === "correct") navigator.vibrate(35);
-        else if (type === "wrong") navigator.vibrate([60, 40, 60]);
+    function setMode(m) {
+      mode = m;
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(`mode-${m}`).classList.add('active');
+
+      if (blitzTimerId) clearInterval(blitzTimerId);
+
+      const tContainer = document.getElementById('timer-container');
+      if (m === 'blitz') {
+        tContainer.style.display = 'block';
+        startBlitz();
+      } else {
+        tContainer.style.display = 'none';
+        resetStats();
+        renderQuestion();
       }
     }
 
-    function isLeap(year) {
-      return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+    function resetStats() {
+      total = 0;
+      correct = 0;
+      streak = 0;
+      updateStats();
     }
 
-    function getMonthAnchor(m, leap) {
-      if (m === 0) return { day: leap ? 4 : 3, hint: leap ? "Jan 4 (Leap)" : "Jan 3" };
-      if (m === 1) return { day: leap ? 29 : 28, hint: leap ? "Feb 29 (Leap)" : "Feb 28" };
-      if (m === 2) return { day: 14, hint: "Pi Day (3/14)" };
-      if (m === 3) return { day: 4, hint: "Even match (4/4)" };
-      if (m === 4) return { day: 9, hint: "9 to 5 (5/9)" };
-      if (m === 5) return { day: 6, hint: "Even match (6/6)" };
-      if (m === 6) return { day: 11, hint: "7-Eleven (7/11)" };
-      if (m === 7) return { day: 8, hint: "Even match (8/8)" };
-      if (m === 8) return { day: 5, hint: "9 to 5 (9/5)" };
-      if (m === 9) return { day: 10, hint: "Even match (10/10)" };
-      if (m === 10) return { day: 7, hint: "7-Eleven (11/7)" };
-      if (m === 11) return { day: 12, hint: "Even match (12/12)" };
+    function updateStats() {
+      document.getElementById('score-text').innerText = `${correct} / ${total}`;
+      const pct = total === 0 ? 0 : Math.round((correct / total) * 100);
+      document.getElementById('pct-text').innerText = `${pct}%`;
+      document.getElementById('streak-text').innerText = `${streak} 🔥`;
     }
 
-    function generateDateForMode(mode) {
-      let minYear = 1700;
-      let maxYear = 2099;
+    function startBlitz() {
+      resetStats();
+      blitzTimeLeft = 60;
+      updateBlitzBar();
+      renderQuestion();
 
-      if (mode === "modern") {
-        minYear = 1900;
-        maxYear = 2099;
-      }
+      blitzTimerId = setInterval(() => {
+        blitzTimeLeft -= 0.1;
+        if (blitzTimeLeft <= 0) {
+          clearInterval(blitzTimerId);
+          blitzTimeLeft = 0;
+          updateBlitzBar();
+          endBlitz();
+        } else {
+          updateBlitzBar();
+        }
+      }, 100);
+    }
+
+    function updateBlitzBar() {
+      const pct = Math.max(0, (blitzTimeLeft / 60) * 100);
+      document.getElementById('timer-bar').style.width = `${pct}%`;
+    }
+
+    function endBlitz() {
+      answered = true;
+      document.querySelectorAll('.btn-day').forEach(b => b.disabled = true);
+      const fb = document.getElementById('feedback');
+      fb.innerHTML = `⏰ <b>Tempo scaduto!</b> Punteggio Blitz: ${correct} date corrette!`;
+      fb.style.color = '#a5b4fc';
+      document.getElementById('next-btn').innerText = "Ricomincia Blitz ↺";
+      document.getElementById('next-btn').style.display = 'block';
+    }
+
+    function isLeap(y) {
+      return (y % 4 === 0 && y % 100 !== 0) || (y % 400 === 0);
+    }
+
+    function generateDate() {
+      let minYear = 1700, maxYear = 2099;
+      if (mode === 'modern') { minYear = 1900; maxYear = 2099; }
+      else if (mode === 'blitz') { minYear = 1950; maxYear = 2050; }
 
       const year = Math.floor(Math.random() * (maxYear - minYear + 1)) + minYear;
       const month = Math.floor(Math.random() * 12);
       const daysInMonth = new Date(year, month + 1, 0).getDate();
       const day = Math.floor(Math.random() * daysInMonth) + 1;
+      
+      const realDayIndex = new Date(year, month, day).getDay();
       const leap = isLeap(year);
 
-      // Standard Day of week: 0 = Sun, 1 = Mon ... 6 = Sat
-      const realDayIndex = new Date(year, month, day).getDay();
-
-      // Conway math
-      const cent = Math.floor(year / 100);
-      const centMod = cent % 4;
-      const centAnchor = CENTURY_ANCHORS[centMod];
-
-      const yy = year % 100;
-      const a = Math.floor(yy / 12);
-      const b = yy % 12;
-      const c = Math.floor(b / 4);
-      const yearOffset = (a + b + c) % 7;
-      const yearDoomsdayVal = (centAnchor.val + yearOffset) % 7;
-
-      const mAnchor = getMonthAnchor(month, leap);
-      const diff = day - mAnchor.day;
-
-      return {
-        year, month, day, leap, realDayIndex,
-        cent, centMod, centAnchor,
-        yy, a, b, c, yearOffset, yearDoomsdayVal,
-        mAnchor, diff
-      };
+      // Calcolo base secolo gregoriano
+      const c = Math.floor(year / 100);
+      const anchorDayIndex = (5 * (c % 4) + 2) % 7;
+      
+      return { year, month, day, realDayIndex, leap, anchorDayIndex };
     }
 
-    const daysGrid = document.getElementById("days-grid");
-    const targetDateLabel = document.getElementById("target-date");
-    const chipCentury = document.getElementById("chip-century");
-    const chipLeap = document.getElementById("chip-leap");
-    const breakdownCard = document.getElementById("breakdown-card");
-    const breakdownContent = document.getElementById("breakdown-content");
-    const nextBtn = document.getElementById("next-btn");
-    const guidedBox = document.getElementById("guided-box");
+    function renderQuestion() {
+      answered = false;
+      current = generateDate();
+      document.getElementById('date-label').innerText = `${current.day} ${MONTHS_IT[current.month]} ${current.year}`;
+      
+      // Impostazione suggerimenti (Hint)
+      const centuryDayName = DAYS[current.anchorDayIndex].name;
+      document.getElementById('hint-century').innerText = `Secolo: ${centuryDayName}`;
+      document.getElementById('hint-leap').style.display = current.leap ? 'inline-block' : 'none';
 
-    function renderDayButtons() {
-      daysGrid.innerHTML = "";
-      const kbdShortcuts = ["1 (D)", "2 (L)", "3 (M)", "4 (M)", "5 (G)", "6 (V)", "7 (S)"];
+      document.getElementById('feedback').innerText = '';
+      document.getElementById('next-btn').style.display = 'none';
 
-      DAYS.forEach((name, idx) => {
-        const btn = document.createElement("button");
-        btn.className = "btn-day";
-        btn.innerHTML = `
-          <span>${name}</span>
-          <span class="kbd-hint">${kbdShortcuts[idx]}</span>
-        `;
-        btn.onclick = () => handleChoice(idx, btn);
-        daysGrid.appendChild(btn);
+      const container = document.getElementById('buttons-container');
+      container.innerHTML = '';
+      DAYS.forEach((item, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-day';
+        btn.innerHTML = `<span>${item.name}</span><span class="shortcut-hint">${item.key}</span>`;
+        btn.onclick = () => checkAnswer(idx);
+        container.appendChild(btn);
       });
     }
 
-    function initNewQuestion() {
-      state.answered = false;
-      state.guidedStep = 0;
-      state.currentDateObj = generateDateForMode(state.mode);
-      state.startTime = performance.now();
+    function checkAnswer(chosenIdx) {
+      if (answered) return;
+      answered = true;
+      total++;
 
-      const cur = state.currentDateObj;
-      targetDateLabel.textContent = `${MONTHS[cur.month]} ${cur.day}, ${cur.year}`;
-      chipCentury.textContent = `${cur.cent}00s: ${cur.centAnchor.name}`;
-      chipLeap.style.display = cur.leap ? "inline-block" : "none";
-
-      breakdownCard.style.display = "none";
-      nextBtn.style.display = "none";
-
-      if (state.mode === "guided") {
-        daysGrid.style.display = "none";
-        guidedBox.style.display = "flex";
-        renderGuidedStep();
-      } else {
-        daysGrid.style.display = "grid";
-        guidedBox.style.display = "none";
-        renderDayButtons();
-      }
-    }
-
-    /* Guided training flow */
-    function renderGuidedStep() {
-      const cur = state.currentDateObj;
-      const stepTitle = document.getElementById("guided-step-title");
-      const question = document.getElementById("guided-question");
-      const opts = document.getElementById("guided-options");
-      opts.innerHTML = "";
-
-      if (state.guidedStep === 0) {
-        stepTitle.textContent = "Step 1 of 4: Century Anchor";
-        question.textContent = `What is the anchor day for the ${cur.cent}00s?`;
-        DAYS.forEach((d, idx) => {
-          const b = document.createElement("button");
-          b.className = "guided-opt-btn";
-          b.textContent = SHORT_DAYS[idx];
-          b.onclick = () => checkGuidedStep(idx === cur.centAnchor.val, cur.centAnchor.name);
-          opts.appendChild(b);
-        });
-      } else if (state.guidedStep === 1) {
-        stepTitle.textContent = `Step 2 of 4: Year Offset for '${cur.yy < 10 ? '0' + cur.yy : cur.yy}`;
-        question.textContent = `Calculate (${cur.yy}//12) + (${cur.yy}%12) + ((${cur.yy}%12)//4) mod 7`;
-        for (let i = 0; i < 7; i++) {
-          const b = document.createElement("button");
-          b.className = "guided-opt-btn";
-          b.textContent = `+${i}`;
-          b.onclick = () => checkGuidedStep(i === cur.yearOffset, `+${cur.yearOffset}`);
-          opts.appendChild(b);
-        }
-      } else if (state.guidedStep === 2) {
-        stepTitle.textContent = `Step 3 of 4: Month Anchor for ${MONTHS[cur.month]}`;
-        question.textContent = `Which day of ${MONTHS[cur.month]} is Doomsday?`;
-        const testDays = [cur.mAnchor.day, (cur.mAnchor.day + 3) % 28 + 1, (cur.mAnchor.day + 7) % 28 + 1].sort((a,b)=>a-b);
-        [...new Set(testDays)].forEach(dayNum => {
-          const b = document.createElement("button");
-          b.className = "guided-opt-btn";
-          b.textContent = `${MONTHS[cur.month]} ${dayNum}`;
-          b.onclick = () => checkGuidedStep(dayNum === cur.mAnchor.day, `${MONTHS[cur.month]} ${cur.mAnchor.day}`);
-          opts.appendChild(b);
-        });
-      } else if (state.guidedStep === 3) {
-        stepTitle.textContent = "Step 4 of 4: Final Day Calculation";
-        question.textContent = `Target is ${cur.day}. What day of the week is it?`;
-        DAYS.forEach((d, idx) => {
-          const b = document.createElement("button");
-          b.className = "guided-opt-btn";
-          b.textContent = SHORT_DAYS[idx];
-          b.onclick = () => handleChoice(idx, null);
-          opts.appendChild(b);
-        });
-      }
-    }
-
-    function checkGuidedStep(isCorrect, answerLabel) {
-      if (isCorrect) {
-        playTone("step");
-        triggerHaptic("correct");
-        state.guidedStep++;
-        if (state.guidedStep < 4) {
-          renderGuidedStep();
-        }
-      } else {
-        playTone("wrong");
-        triggerHaptic("wrong");
-        alertBox(`Tip: The correct anchor is ${answerLabel}. Try again!`);
-      }
-    }
-
-    function alertBox(msg) {
-      const q = document.getElementById("guided-question");
-      const original = q.textContent;
-      q.textContent = msg;
-      q.style.color = "var(--danger)";
-      setTimeout(() => {
-        q.textContent = original;
-        q.style.color = "#fff";
-      }, 1800);
-    }
-
-    function handleChoice(chosenIdx, clickedBtn) {
-      if (state.answered) return;
-      state.answered = true;
-
-      const cur = state.currentDateObj;
-      const isRight = chosenIdx === cur.realDayIndex;
-      const elapsed = (performance.now() - state.startTime) / 1000;
-
-      state.total++;
-      state.totalResponseTime += elapsed;
-
+      const isRight = (chosenIdx === current.realDayIndex);
       if (isRight) {
-        state.score++;
-        state.streak++;
-        if (state.streak > state.bestStreak) state.bestStreak = state.streak;
-        playTone("correct");
-        triggerHaptic("correct");
+        correct++;
+        streak++;
+        soundSuccess();
+        if (navigator.vibrate) navigator.vibrate(40);
       } else {
-        state.streak = 0;
-        playTone("wrong");
-        triggerHaptic("wrong");
+        streak = 0;
+        soundFail();
+        if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
       }
 
-      updateStatsUI();
+      updateStats();
 
-      // Highlight buttons
-      const allBtns = document.querySelectorAll(".btn-day");
+      const allBtns = document.querySelectorAll('.btn-day');
       allBtns.forEach((b, idx) => {
         b.disabled = true;
-        if (idx === cur.realDayIndex) b.classList.add("correct");
-        else if (idx === chosenIdx) b.classList.add("wrong");
+        if (idx === current.realDayIndex) b.classList.add('correct');
+        else if (idx === chosenIdx) b.classList.add('wrong');
       });
 
-      // Show breakdown
-      displayConwayBreakdown(cur, isRight);
-      nextBtn.style.display = "flex";
-      nextBtn.focus();
-    }
+      const fb = document.getElementById('feedback');
+      fb.innerText = isRight ? "✓ Corretto!" : `✗ Errato! Era ${DAYS[current.realDayIndex].name}`;
+      fb.style.color = isRight ? "var(--success)" : "var(--danger)";
 
-    function displayConwayBreakdown(c, isRight) {
-      const diffMod = ((c.diff % 7) + 7) % 7;
-      const diffSign = c.diff >= 0 ? `+${c.diff}` : `${c.diff}`;
-
-      breakdownContent.innerHTML = `
-        <div style="margin-bottom: 6px; font-weight: 700; color:${isRight ? 'var(--success)' : 'var(--danger)'}">
-          ${isRight ? '✓ Exactly correct!' : `✗ Incorrect (Correct: ${DAYS[c.realDayIndex]})`}
-        </div>
-        <div>1. <b>Century (${c.cent}00s)</b>: Anchor is <b>${c.centAnchor.name}</b> (${c.centAnchor.val})</div>
-        <div>2. <b>Year (${c.yy < 10 ? '0' + c.yy : c.yy})</b>: ${c.a} + ${c.b} + ${c.c} = ${c.a + c.b + c.c} ➔ <b>+${c.yearOffset}</b> days</div>
-        <div>3. <b>Year Doomsday</b>: ${c.centAnchor.name} + ${c.yearOffset} = <b>${DAYS[c.yearDoomsdayVal]}</b></div>
-        <div>4. <b>Month Anchor</b>: ${MONTHS[c.month]} ${c.mAnchor.day} (${c.mAnchor.hint})</div>
-        <div>5. <b>Offset</b>: Day ${c.day} - ${c.mAnchor.day} = ${diffSign} days (${diffSign >= 0 ? '+' : ''}${c.diff % 7} mod 7) ➔ <b>${DAYS[c.realDayIndex]}</b></div>
-      `;
-      breakdownCard.style.display = "block";
-    }
-
-    function updateStatsUI() {
-      document.getElementById("stat-score").textContent = `${state.score}/${state.total}`;
-      document.getElementById("stat-streak").textContent = `${state.streak} 🔥`;
-      document.getElementById("stat-best").textContent = `${state.bestStreak}`;
-      const avg = state.total > 0 ? (state.totalResponseTime / state.total).toFixed(1) : "0.0";
-      document.getElementById("stat-speed").textContent = `${avg}s`;
-    }
-
-    function startTimeAttack() {
-      state.timeLeft = 60;
-      const barContainer = document.getElementById("timer-container");
-      const bar = document.getElementById("timer-bar");
-      barContainer.style.display = "block";
-      bar.style.width = "100%";
-
-      clearInterval(state.timerInterval);
-      const start = Date.now();
-      const duration = 60000;
-
-      state.timerInterval = setInterval(() => {
-        const remaining = Math.max(0, duration - (Date.now() - start));
-        const pct = (remaining / duration) * 100;
-        bar.style.width = `${pct}%`;
-
-        if (remaining <= 0) {
-          clearInterval(state.timerInterval);
-          barContainer.style.display = "none";
-          alertTimeAttackOver();
+      if (mode === 'blitz') {
+        if (blitzTimeLeft > 0) {
+          setTimeout(() => { if (blitzTimeLeft > 0) renderQuestion(); }, 400);
         }
-      }, 100);
-    }
-
-    function alertTimeAttackOver() {
-      daysGrid.style.display = "none";
-      breakdownCard.style.display = "block";
-      breakdownContent.innerHTML = `
-        <div style="font-size: 1.15rem; font-weight: 800; color: #f59e0b; margin-bottom: 8px;">
-          ⏱️ Time's Up! Blitz Completed!
-        </div>
-        <div>Final Score: <b>${state.score}</b> correct answers in 60s!</div>
-        <div>Best Streak: <b>${state.bestStreak}</b> | Accuracy: <b>${Math.round((state.score / (state.total || 1)) * 100)}%</b></div>
-      `;
-      nextBtn.style.display = "flex";
-      nextBtn.textContent = "Play Again ➔";
-    }
-
-    document.querySelectorAll(".mode-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".mode-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        state.mode = btn.dataset.mode;
-        
-        clearInterval(state.timerInterval);
-        document.getElementById("timer-container").style.display = "none";
-
-        if (state.mode === "timeattack") {
-          state.score = 0;
-          state.total = 0;
-          state.streak = 0;
-          updateStatsUI();
-          startTimeAttack();
-        }
-
-        initNewQuestion();
-      });
-    });
-
-    nextBtn.addEventListener("click", () => {
-      nextBtn.textContent = "Next Date ➔";
-      initNewQuestion();
-    });
-
-    // Sound toggle
-    const soundBtn = document.getElementById("sound-btn");
-    soundBtn.addEventListener("click", () => {
-      state.soundEnabled = !state.soundEnabled;
-      soundBtn.textContent = state.soundEnabled ? "🔊" : "🔇";
-      soundBtn.title = state.soundEnabled ? "Sound: On" : "Sound: Muted";
-    });
-
-    // Modal Sheet toggle
-    const cheatBtn = document.getElementById("cheat-btn");
-    const modalCheat = document.getElementById("modal-cheat");
-    const closeModal = document.getElementById("close-modal");
-
-    cheatBtn.addEventListener("click", () => modalCheat.style.display = "flex");
-    closeModal.addEventListener("click", () => modalCheat.style.display = "none");
-    modalCheat.addEventListener("click", (e) => {
-      if (e.target === modalCheat) modalCheat.style.display = "none";
-    });
-
-    window.addEventListener("keydown", (e) => {
-      if (modalCheat.style.display === "flex") {
-        if (e.key === "Escape") modalCheat.style.display = "none";
-        return;
+      } else {
+        const nextBtn = document.getElementById('next-btn');
+        nextBtn.innerText = "Data Successiva → (o Spazio)";
+        nextBtn.style.display = 'block';
       }
+    }
 
-      // Space to advance
-      if (e.code === "Space" && state.answered) {
+    function nextQuestion() {
+      if (mode === 'blitz' && blitzTimeLeft <= 0) {
+        startBlitz();
+      } else {
+        renderQuestion();
+      }
+    }
+
+    function openCheatSheet() {
+      document.getElementById('modal-cheat').style.display = 'flex';
+    }
+
+    function closeCheatSheet() {
+      document.getElementById('modal-cheat').style.display = 'none';
+    }
+
+    // Keyboard support (Solo Numeri e Spazio)
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeCheatSheet();
+
+      if (e.code === 'Space' && answered && mode !== 'blitz') {
         e.preventDefault();
-        nextBtn.click();
+        nextQuestion();
         return;
       }
 
-      if (state.answered || state.mode === "guided") return;
-
-      // 1-7 keys for Sun-Sat
-      if (e.key >= "1" && e.key <= "7") {
-        const idx = parseInt(e.key, 10) - 1;
-        const btn = daysGrid.children[idx];
-        if (btn) handleChoice(idx, btn);
-      }
-
-      // Key initial shortcuts: D, L, M, G, V, S
-      const letterMap = {
-        'd': 0, // Domenica / Sunday
-        'l': 1, // Lunedì
-        'g': 4, // Giovedì
-        'v': 5, // Venerdì
-        's': 6  // Sabato
-      };
-
-      if (letterMap[e.key.toLowerCase()] !== undefined) {
-        const idx = letterMap[e.key.toLowerCase()];
-        const btn = daysGrid.children[idx];
-        if (btn) handleChoice(idx, btn);
+      const num = parseInt(e.key);
+      if (!isNaN(num) && num >= 1 && num <= 7 && !answered) {
+        checkAnswer(num - 1);
       }
     });
 
-    // Initialize application
-    initNewQuestion();
+    renderQuestion();
   </script>
 </body>
 </html>
