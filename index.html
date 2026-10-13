@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Doomsday Trainer</title>
+  <meta name="theme-color" content="#1e1e2f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <style>
+    :root {
+      --bg: #12131c;
+      --card: #1e2030;
+      --accent: #4f46e5;
+      --accent-hover: #4338ca;
+      --success: #10b981;
+      --danger: #ef4444;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+    .header {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 0 4px;
+    }
+    .score-badge {
+      background: var(--card);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .card {
+      background: var(--card);
+      width: 100%;
+      max-width: 420px;
+      border-radius: 24px;
+      padding: 24px 20px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      margin-bottom: 20px;
+    }
+    .label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .date-display {
+      font-size: 1.85rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+    .leap-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: rgba(79, 70, 229, 0.25);
+      color: #a5b4fc;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      width: 100%;
+      max-width: 420px;
+    }
+    button.btn-day {
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      padding: 14px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.05s;
+    }
+    button.btn-day:active { transform: scale(0.98); }
+    button.btn-day.correct { background: var(--success); color: #fff; border-color: transparent; }
+    button.btn-day.wrong { background: var(--danger); color: #fff; border-color: transparent; }
+    
+    .feedback {
+      margin-top: 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      min-height: 24px;
+    }
+    .next-btn {
+      width: 100%;
+      max-width: 420px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 15px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border-radius: 16px;
+      margin-top: 16px;
+      cursor: pointer;
+      display: none;
+    }
+    .details {
+      width: 100%;
+      max-width: 420px;
+      margin-top: 12px;
+      background: rgba(30, 32, 48, 0.7);
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: var(--text-muted);
+      display: none;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div style="font-weight:700; font-size:1.1rem;">Doomsday Trainer</div>
+    <div class="score-badge" id="score">0 / 0 (0%)</div>
+  </div>
+
+  <div class="card">
+    <div class="label">What day of the week is</div>
+    <div class="date-display" id="date-label">Loading...</div>
+    <div class="leap-badge" id="leap-label" style="display:none;">Leap Year</div>
+  </div>
+
+  <div class="grid" id="buttons-container"></div>
+  <div class="feedback" id="feedback"></div>
+  <div class="details" id="details"></div>
+  <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Date →</button>
+
+  <script>
+    const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const MONTHS = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    const CENTURY_ANCHORS = { 17: 0, 18: 5, 19: 3, 20: 2 };
+
+    let total = 0;
+    let correct = 0;
+    let current = null;
+    let answered = false;
+
+    function isLeap(y) {
+      return (y % 4 === 0 && y % 100 !== 0) || (y % 400 === 0);
+    }
+
+    function getDoomsdayOfMonth(mIndex, leap) {
+      if (mIndex === 0) return leap ? 4 : 3;
+      if (mIndex === 1) return leap ? 29 : 28;
+      if (mIndex === 2) return 14;
+      const map = { 3: 4, 4: 9, 5: 6, 6: 11, 7: 8, 8: 5, 9: 10, 10: 7, 11: 12 };
+      return map[mIndex];
+    }
+
+    function generateDate() {
+      const year = Math.floor(Math.random() * (2099 - 1700 + 1)) + 1700;
+      const month = Math.floor(Math.random() * 12);
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const day = Math.floor(Math.random() * daysInMonth) + 1;
+      
+      const realDayIndex = new Date(year, month, day).getDay();
+      const leap = isLeap(year);
+
+      // Conway values
+      const c = Math.floor(year / 100);
+      const yy = year % 100;
+      const anchor = CENTURY_ANCHORS[c];
+      const a = Math.floor(yy / 12);
+      const b = yy % 12;
+      const d = Math.floor(b / 4);
+      const yearDoomsday = (anchor + a + b + d) % 7;
+      const monthDoomsday = getDoomsdayOfMonth(month, leap);
+
+      return { year, month, day, realDayIndex, leap, anchor, a, b, d, yearDoomsday, monthDoomsday };
+    }
+
+    function renderQuestion() {
+      answered = false;
+      current = generateDate();
+      document.getElementById('date-label').innerText = `${MONTHS[current.month]} ${current.day}, ${current.year}`;
+      document.getElementById('leap-label').style.display = current.leap ? 'inline-block' : 'none';
+      document.getElementById('feedback').innerText = '';
+      document.getElementById('details').style.display = 'none';
+      document.getElementById('next-btn').style.display = 'none';
+
+      const container = document.getElementById('buttons-container');
+      container.innerHTML = '';
+      DAYS.forEach((name, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-day';
+        btn.innerText = name;
+        btn.onclick = () => checkAnswer(idx, btn);
+        container.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(chosenIdx, btn) {
+      if (answered) return;
+      answered = true;
+      total++;
+
+      const isRight = chosenIdx === current.realDayIndex;
+      if (isRight) correct++;
+
+      const pct = Math.round((correct / total) * 100);
+      document.getElementById('score').innerText = `${correct} / ${total} (${pct}%)`;
+
+      const allBtns = document.querySelectorAll('.btn-day');
+      allBtns.forEach((b, idx) => {
+        b.disabled = true;
+        if (idx === current.realDayIndex) b.classList.add('correct');
+        else if (idx === chosenIdx) b.classList.add('wrong');
+      });
+
+      const fb = document.getElementById('feedback');
+      fb.innerText = isRight ? "✓ Correct!" : `✗ Wrong! It was ${DAYS[current.realDayIndex]}`;
+      fb.style.color = isRight ? "var(--success)" : "var(--danger)";
+
+      const diff = current.day - current.monthDoomsday;
+      const details = document.getElementById('details');
+      details.innerHTML = `
+        <b>Doomsday Steps:</b><br>
+        • Century anchor (${Math.floor(current.year / 100)}00s): ${DAYS[current.anchor]}<br>
+        • Year shift: ${current.a} + ${current.b} + ${current.d} = +${current.a + current.b + current.d} mod 7<br>
+        • Year Doomsday: ${DAYS[current.yearDoomsday]}<br>
+        • Month anchor: ${MONTHS[current.month]} ${current.monthDoomsday}<br>
+        • Target offset: ${current.day} - ${current.monthDoomsday} = ${diff >= 0 ? '+' + diff : diff} days
+      `;
+      details.style.display = 'block';
+      document.getElementById('next-btn').style.display = 'block';
+    }
+
+    function nextQuestion() {
+      renderQuestion();
+    }
+
+    renderQuestion();
+  </script>
+</body>
+</html>
