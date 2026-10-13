@@ -381,6 +381,7 @@
       color: white;
       font-weight: 700;
       cursor: pointer;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -388,33 +389,33 @@
 
   <div class="header">
     <div class="title-group">
-      <span style="font-size:1.4rem;">📅</span>
+      <button class="icon-btn" id="lang-toggle" onclick="toggleLang()" style="margin-right: 4px; font-size: 1.2rem;">🇮🇹</button>
       <span class="logo-text">Doomsday Trainer</span>
     </div>
     <div class="actions">
-      <button class="icon-btn" id="hint-toggle" title="Attiva/Disattiva Aiuti" onclick="toggleHints()">💡</button>
-      <button class="icon-btn" id="sound-toggle" title="Attiva/Disattiva Audio" onclick="toggleAudio()">🔊</button>
-      <button class="icon-btn" title="Tutorial / Cheat Sheet" onclick="openCheatSheet()">📖</button>
+      <button class="icon-btn" id="hint-toggle" onclick="toggleHints()">💡</button>
+      <button class="icon-btn" id="sound-toggle" onclick="toggleAudio()">🔊</button>
+      <button class="icon-btn" onclick="openCheatSheet()">📖</button>
     </div>
   </div>
 
   <div class="mode-selector">
-    <button class="mode-btn active" id="mode-classic" onclick="setMode('classic')">Classico</button>
-    <button class="mode-btn" id="mode-modern" onclick="setMode('modern')">1900-2099</button>
-    <button class="mode-btn" id="mode-blitz" onclick="setMode('blitz')">Blitz 60s</button>
+    <button class="mode-btn active" id="mode-classic" onclick="setMode('classic')"></button>
+    <button class="mode-btn" id="mode-modern" onclick="setMode('modern')"></button>
+    <button class="mode-btn" id="mode-blitz" onclick="setMode('blitz')"></button>
   </div>
 
   <div class="stats-row">
     <div class="stat-card">
-      <div class="stat-label">Punteggio</div>
+      <div class="stat-label" id="label-score"></div>
       <div class="stat-val" id="score-text">0 / 0</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Precisione</div>
+      <div class="stat-label" id="label-pct"></div>
       <div class="stat-val" id="pct-text">0%</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Serie (Streak)</div>
+      <div class="stat-label" id="label-streak"></div>
       <div class="stat-val" id="streak-text">0 🔥</div>
     </div>
   </div>
@@ -424,89 +425,139 @@
   </div>
 
   <div class="date-card">
-    <div class="date-card-label">Che giorno della settimana è?</div>
-    <div class="date-text" id="date-label">Caricamento...</div>
+    <div class="date-card-label" id="date-card-label"></div>
+    <div class="date-text" id="date-label"></div>
     
     <div class="hints-container" id="hints-container" style="display: none;">
-      <span class="hint-badge century" id="hint-century">Secolo: -</span>
-      <span class="hint-badge leap" id="hint-leap" style="display: none;">Anno Bisestile</span>
+      <span class="hint-badge century" id="hint-century"></span>
+      <span class="hint-badge leap" id="hint-leap" style="display: none;"></span>
     </div>
   </div>
 
   <div class="grid" id="buttons-container"></div>
   <div class="feedback" id="feedback"></div>
-  <button class="next-btn" id="next-btn" onclick="nextQuestion()">Data Successiva → (o Spazio)</button>
+  <button class="next-btn" id="next-btn" onclick="nextQuestion()"></button>
 
   <!-- Cheat Sheet Modal -->
   <div class="modal-overlay" id="modal-cheat">
     <div class="modal-card">
-      <h3>📖 Guida & Cheat Sheet Doomsday</h3>
-      
-      <b style="font-size:0.9rem; color:#a5b4fc;">1. Giorni base dei secoli:</b>
-      <table>
-        <tr><th>Secolo</th><th>Giorno base</th></tr>
-        <tr><td>1600, 2000, 2400</td><td>Martedì (2)</td></tr>
-        <tr><td>1700, 2100, 2500</td><td>Domenica (0)</td></tr>
-        <tr><td>1800, 2200, 2600</td><td>Venerdì (5)</td></tr>
-        <tr><td>1900, 2300, 2700</td><td>Mercoledì (3)</td></tr>
-      </table>
-
-      <b style="font-size:0.9rem; color:#a5b4fc;">2. Il calcolo sull'anno (ultime due cifre):</b>
-      <p style="font-size: 0.85rem; background: rgba(255,255,255,0.04); padding: 12px; border-radius: 8px; line-height: 1.5;">
-        Prendi le ultime due cifre dell'anno (ad esempio, per il 19<b>75</b> usa solo il 75) e trova questi 3 numeri:<br><br>
-        <b>A. Quoziente del 12:</b> Quante volte il 12 sta nel numero? (75 / 12 = <b>6</b>)<br>
-        <b>B. Resto del 12:</b> Qual è il resto di questa divisione? (75 - 72 = <b>3</b>)<br>
-        <b>C. Quoziente del 4:</b> Quante volte il 4 sta nel resto appena trovato? (3 / 4 = <b>0</b>)<br><br>
-        <b>Somma i 3 numeri trovati:</b> 6 + 3 + 0 = <b>9</b>.<br>
-        <i>(Sottrai i multipli di 7 per semplificare: 9 - 7 = <b>2</b>).</i><br>
-        Questo è lo scarto! Aggiungi 2 al giorno base del secolo (Mercoledì + 2 = Venerdì).
-      </p>
-
-      <b style="font-size:0.9rem; color:#a5b4fc;">3. Date Doomsday nei mesi:</b>
-      <table>
-        <tr><th>Mese</th><th>Giorno</th><th>Trucco a mente</th></tr>
-        <tr><td>Gennaio</td><td>3 gen (4 se bisestile)</td><td>3 / 4</td></tr>
-        <tr><td>Febbraio</td><td>28 feb (29 se bisestile)</td><td>Ultimo giorno</td></tr>
-        <tr><td>Marzo</td><td>14 marzo</td><td>Pi Day (3.14)</td></tr>
-        <tr><td>Mesi pari (4, 6, 8, 10, 12)</td><td>4/4, 6/6, 8/8, 10/10, 12/12</td><td>Mese e giorno uguali</td></tr>
-        <tr><td>Maggio / Settembre</td><td>9/5 e 5/9</td><td>"Lavoro dalle 9 alle 5"</td></tr>
-        <tr><td>Luglio / Novembre</td><td>11/7 e 7/11</td><td>"Convenience store 7-Eleven"</td></tr>
-      </table>
-
-      <button class="modal-close-btn" onclick="closeCheatSheet()">Ho capito, torna al Quiz</button>
+      <div id="modal-cheat-content"></div>
+      <button class="modal-close-btn" onclick="closeCheatSheet()" id="cheat-close-btn"></button>
     </div>
   </div>
 
   <script>
-    const DAYS = [
-      { name: "Domenica", key: "1" },
-      { name: "Lunedì", key: "2" },
-      { name: "Martedì", key: "3" },
-      { name: "Mercoledì", key: "4" },
-      { name: "Giovedì", key: "5" },
-      { name: "Venerdì", key: "6" },
-      { name: "Sabato", key: "7" }
-    ];
+    const i18n = {
+      it: {
+        flag: "🇮🇹",
+        modeClassic: "Classico", modeModern: "1900-2099", modeBlitz: "Blitz 60s",
+        statScore: "Punteggio", statAcc: "Precisione", statStreak: "Serie (Streak)",
+        question: "Che giorno della settimana è?",
+        hintCentury: "Secolo:", hintLeap: "Anno Bisestile",
+        nextBtn: "Data Successiva → (o Spazio)", blitzRestart: "Ricomincia Blitz ↺",
+        feedbackCorrect: "✓ Corretto!", feedbackWrong: "✗ Errato! Era",
+        blitzTimeout: "⏰ <b>Tempo scaduto!</b> Punteggio Blitz: {correct} date corrette!",
+        days: [
+          { name: "Domenica", key: "1" }, { name: "Lunedì", key: "2" }, 
+          { name: "Martedì", key: "3" }, { name: "Mercoledì", key: "4" }, 
+          { name: "Giovedì", key: "5" }, { name: "Venerdì", key: "6" }, { name: "Sabato", key: "7" }
+        ],
+        months: ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"],
+        cheatCloseBtn: "Ho capito, torna al Quiz",
+        cheatContent: `
+          <h3>📖 Guida & Cheat Sheet Doomsday</h3>
+          <b style="font-size:0.9rem; color:#a5b4fc;">1. Giorni base dei secoli:</b>
+          <table>
+            <tr><th>Secolo</th><th>Giorno base</th></tr>
+            <tr><td>1600, 2000, 2400</td><td>Martedì (2)</td></tr>
+            <tr><td>1700, 2100, 2500</td><td>Domenica (0)</td></tr>
+            <tr><td>1800, 2200, 2600</td><td>Venerdì (5)</td></tr>
+            <tr><td>1900, 2300, 2700</td><td>Mercoledì (3)</td></tr>
+          </table>
+          <b style="font-size:0.9rem; color:#a5b4fc;">2. Il calcolo sull'anno (ultime due cifre):</b>
+          <p style="font-size: 0.85rem; background: rgba(255,255,255,0.04); padding: 12px; border-radius: 8px; line-height: 1.5;">
+            Prendi le ultime due cifre dell'anno (es. 19<b>75</b> usa 75) e trova questi 3 numeri:<br><br>
+            <b>A. Quoziente del 12:</b> Quante volte il 12 sta nel numero? (75 / 12 = <b>6</b>)<br>
+            <b>B. Resto del 12:</b> Qual è il resto? (75 - 72 = <b>3</b>)<br>
+            <b>C. Quoziente del 4:</b> Quante volte il 4 sta nel resto? (3 / 4 = <b>0</b>)<br><br>
+            <b>Somma i 3 numeri:</b> 6 + 3 + 0 = <b>9</b>. <i>(-7 = <b>2</b>).</i><br>
+            Aggiungi 2 al giorno base del secolo (Mercoledì + 2 = Venerdì).
+          </p>
+          <b style="font-size:0.9rem; color:#a5b4fc;">3. Date Doomsday nei mesi:</b>
+          <table>
+            <tr><th>Mese</th><th>Giorno</th><th>Trucco a mente</th></tr>
+            <tr><td>Gennaio</td><td>3 gen (4 se bisestile)</td><td>3 / 4</td></tr>
+            <tr><td>Febbraio</td><td>28 feb (29 se bisestile)</td><td>Ultimo giorno</td></tr>
+            <tr><td>Marzo</td><td>14 marzo</td><td>Pi Day (3.14)</td></tr>
+            <tr><td>Pari (4, 6, 8, 10, 12)</td><td>4/4, 6/6, 8/8...</td><td>Mese e giorno uguali</td></tr>
+            <tr><td>Maggio / Sett.</td><td>9/5 e 5/9</td><td>"Dalle 9 alle 5"</td></tr>
+            <tr><td>Luglio / Nov.</td><td>11/7 e 7/11</td><td>"7-Eleven store"</td></tr>
+          </table>
+        `
+      },
+      en: {
+        flag: "🇬🇧",
+        modeClassic: "Classic", modeModern: "1900-2099", modeBlitz: "60s Blitz",
+        statScore: "Score", statAcc: "Accuracy", statStreak: "Streak",
+        question: "What day of the week is it?",
+        hintCentury: "Century:", hintLeap: "Leap Year",
+        nextBtn: "Next Date → (or Space)", blitzRestart: "Restart Blitz ↺",
+        feedbackCorrect: "✓ Correct!", feedbackWrong: "✗ Wrong! It was",
+        blitzTimeout: "⏰ <b>Time's up!</b> Blitz Score: {correct} correct dates!",
+        days: [
+          { name: "Sunday", key: "1" }, { name: "Monday", key: "2" }, 
+          { name: "Tuesday", key: "3" }, { name: "Wednesday", key: "4" }, 
+          { name: "Thursday", key: "5" }, { name: "Friday", key: "6" }, { name: "Saturday", key: "7" }
+        ],
+        months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        cheatCloseBtn: "Got it, back to Quiz",
+        cheatContent: `
+          <h3>📖 Doomsday Cheat Sheet</h3>
+          <b style="font-size:0.9rem; color:#a5b4fc;">1. Century Anchor Days:</b>
+          <table>
+            <tr><th>Century</th><th>Anchor Day</th></tr>
+            <tr><td>1600, 2000, 2400</td><td>Tuesday (2)</td></tr>
+            <tr><td>1700, 2100, 2500</td><td>Sunday (0)</td></tr>
+            <tr><td>1800, 2200, 2600</td><td>Friday (5)</td></tr>
+            <tr><td>1900, 2300, 2700</td><td>Wednesday (3)</td></tr>
+          </table>
+          <b style="font-size:0.9rem; color:#a5b4fc;">2. Year Calculation (Last two digits):</b>
+          <p style="font-size: 0.85rem; background: rgba(255,255,255,0.04); padding: 12px; border-radius: 8px; line-height: 1.5;">
+            Take the last two digits of the year (e.g. 19<b>75</b> use 75) and find these 3 numbers:<br><br>
+            <b>A. Divides by 12:</b> How many times does 12 fit in? (75 / 12 = <b>6</b>)<br>
+            <b>B. Remainder of 12:</b> What's left over? (75 - 72 = <b>3</b>)<br>
+            <b>C. Divides by 4:</b> How many times does 4 fit in the remainder? (3 / 4 = <b>0</b>)<br><br>
+            <b>Sum the 3 numbers:</b> 6 + 3 + 0 = <b>9</b>. <i>(-7 = <b>2</b>).</i><br>
+            Add 2 to the century anchor day (Wednesday + 2 = Friday).
+          </p>
+          <b style="font-size:0.9rem; color:#a5b4fc;">3. Doomsday Dates by Month:</b>
+          <table>
+            <tr><th>Month</th><th>Date</th><th>Mnemonic Rule</th></tr>
+            <tr><td>January</td><td>Jan 3 (4 if leap)</td><td>3 / 4</td></tr>
+            <tr><td>February</td><td>Feb 28 (29 if leap)</td><td>Last day</td></tr>
+            <tr><td>March</td><td>March 14</td><td>Pi Day (3.14)</td></tr>
+            <tr><td>Evens (4, 6, 8, 10, 12)</td><td>4/4, 6/6, 8/8...</td><td>Month matches day</td></tr>
+            <tr><td>May / Sep</td><td>9/5 and 5/9</td><td>"Working 9 to 5"</td></tr>
+            <tr><td>July / Nov</td><td>11/7 and 7/11</td><td>"7-Eleven store"</td></tr>
+          </table>
+        `
+      }
+    };
 
-    const MONTHS_IT = [
-      "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
-      "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"
-    ];
-
+    let lang = 'it';
     let mode = 'classic';
     let total = 0;
     let correct = 0;
     let streak = 0;
     let current = null;
     let answered = false;
+    let lastIsRight = false;
     let soundEnabled = true;
     let hintsEnabled = false;
 
-    // Blitz Timer state
     let blitzTimeLeft = 60;
     let blitzTimerId = null;
 
-    // Web Audio FX
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
     function playTone(freq, type, duration) {
@@ -526,32 +577,16 @@
       } catch(e) {}
     }
 
-    function soundSuccess() {
-      playTone(523.25, 'sine', 0.12);
-      setTimeout(() => playTone(659.25, 'sine', 0.18), 90);
-    }
+    function soundSuccess() { playTone(523.25, 'sine', 0.12); setTimeout(() => playTone(659.25, 'sine', 0.18), 90); }
+    function soundFail() { playTone(220, 'triangle', 0.25); }
 
-    function soundFail() {
-      playTone(220, 'triangle', 0.25);
-    }
-
-    function toggleAudio() {
-      soundEnabled = !soundEnabled;
-      document.getElementById('sound-toggle').innerText = soundEnabled ? '🔊' : '🔇';
-    }
-
+    function toggleAudio() { soundEnabled = !soundEnabled; document.getElementById('sound-toggle').innerText = soundEnabled ? '🔊' : '🔇'; }
+    function toggleLang() { lang = lang === 'it' ? 'en' : 'it'; updateUI(); }
+    
     function toggleHints() {
       hintsEnabled = !hintsEnabled;
-      const btn = document.getElementById('hint-toggle');
-      const container = document.getElementById('hints-container');
-      
-      if (hintsEnabled) {
-        btn.classList.add('active-hint');
-        container.style.display = 'flex';
-      } else {
-        btn.classList.remove('active-hint');
-        container.style.display = 'none';
-      }
+      document.getElementById('hint-toggle').classList.toggle('active-hint', hintsEnabled);
+      document.getElementById('hints-container').style.display = hintsEnabled ? 'flex' : 'none';
     }
 
     function setMode(m) {
@@ -560,8 +595,8 @@
       document.getElementById(`mode-${m}`).classList.add('active');
 
       if (blitzTimerId) clearInterval(blitzTimerId);
-
       const tContainer = document.getElementById('timer-container');
+      
       if (m === 'blitz') {
         tContainer.style.display = 'block';
         startBlitz();
@@ -572,17 +607,11 @@
       }
     }
 
-    function resetStats() {
-      total = 0;
-      correct = 0;
-      streak = 0;
-      updateStats();
-    }
+    function resetStats() { total = 0; correct = 0; streak = 0; updateStats(); }
 
     function updateStats() {
       document.getElementById('score-text').innerText = `${correct} / ${total}`;
-      const pct = total === 0 ? 0 : Math.round((correct / total) * 100);
-      document.getElementById('pct-text').innerText = `${pct}%`;
+      document.getElementById('pct-text').innerText = total === 0 ? `0%` : `${Math.round((correct / total) * 100)}%`;
       document.getElementById('streak-text').innerText = `${streak} 🔥`;
     }
 
@@ -591,37 +620,25 @@
       blitzTimeLeft = 60;
       updateBlitzBar();
       renderQuestion();
-
       blitzTimerId = setInterval(() => {
         blitzTimeLeft -= 0.1;
-        if (blitzTimeLeft <= 0) {
-          clearInterval(blitzTimerId);
-          blitzTimeLeft = 0;
-          updateBlitzBar();
-          endBlitz();
-        } else {
-          updateBlitzBar();
-        }
+        if (blitzTimeLeft <= 0) { clearInterval(blitzTimerId); blitzTimeLeft = 0; endBlitz(); }
+        updateBlitzBar();
       }, 100);
     }
 
-    function updateBlitzBar() {
-      const pct = Math.max(0, (blitzTimeLeft / 60) * 100);
-      document.getElementById('timer-bar').style.width = `${pct}%`;
-    }
+    function updateBlitzBar() { document.getElementById('timer-bar').style.width = `${Math.max(0, (blitzTimeLeft / 60) * 100)}%`; }
 
     function endBlitz() {
       answered = true;
       document.querySelectorAll('.btn-day').forEach(b => b.disabled = true);
       const fb = document.getElementById('feedback');
-      fb.innerHTML = `⏰ <b>Tempo scaduto!</b> Punteggio Blitz: ${correct} date corrette!`;
+      fb.innerHTML = i18n[lang].blitzTimeout.replace('{correct}', correct);
       fb.style.color = '#a5b4fc';
-      document.getElementById('next-btn').innerText = "Ricomincia Blitz ↺";
-      document.getElementById('next-btn').style.display = 'block';
-    }
-
-    function isLeap(y) {
-      return (y % 4 === 0 && y % 100 !== 0) || (y % 400 === 0);
+      
+      const nextBtn = document.getElementById('next-btn');
+      nextBtn.innerText = i18n[lang].blitzRestart;
+      nextBtn.style.display = 'block';
     }
 
     function generateDate() {
@@ -635,48 +652,86 @@
       const day = Math.floor(Math.random() * daysInMonth) + 1;
       
       const realDayIndex = new Date(year, month, day).getDay();
-      const leap = isLeap(year);
-
-      // Calcolo base secolo gregoriano
-      const c = Math.floor(year / 100);
-      const anchorDayIndex = (5 * (c % 4) + 2) % 7;
+      const leap = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+      const anchorDayIndex = (5 * (Math.floor(year / 100) % 4) + 2) % 7;
       
       return { year, month, day, realDayIndex, leap, anchorDayIndex };
+    }
+
+    function updateUI() {
+      const t = i18n[lang];
+      document.getElementById('lang-toggle').innerText = t.flag;
+      
+      document.getElementById('mode-classic').innerText = t.modeClassic;
+      document.getElementById('mode-modern').innerText = t.modeModern;
+      document.getElementById('mode-blitz').innerText = t.modeBlitz;
+      
+      document.getElementById('label-score').innerText = t.statScore;
+      document.getElementById('label-pct').innerText = t.statAcc;
+      document.getElementById('label-streak').innerText = t.statStreak;
+      document.getElementById('date-card-label').innerText = t.question;
+      
+      document.getElementById('modal-cheat-content').innerHTML = t.cheatContent;
+      document.getElementById('cheat-close-btn').innerText = t.cheatCloseBtn;
+      
+      const nextBtn = document.getElementById('next-btn');
+      if (mode === 'blitz' && blitzTimeLeft <= 0) nextBtn.innerText = t.blitzRestart;
+      else nextBtn.innerText = t.nextBtn;
+
+      if (current) {
+        document.getElementById('date-label').innerText = lang === 'it' 
+          ? `${current.day} ${t.months[current.month]} ${current.year}`
+          : `${t.months[current.month]} ${current.day}, ${current.year}`;
+          
+        document.getElementById('hint-century').innerText = `${t.hintCentury} ${t.days[current.anchorDayIndex].name}`;
+        document.getElementById('hint-leap').innerText = t.hintLeap;
+
+        // Aggiorna solo il testo dei pulsanti esistenti (senza distruggere lo stato corretto/sbagliato)
+        document.querySelectorAll('.btn-day span:first-child').forEach((span, idx) => {
+          span.innerText = t.days[idx].name;
+        });
+
+        if (answered) {
+          const fb = document.getElementById('feedback');
+          if (mode === 'blitz' && blitzTimeLeft <= 0) {
+            fb.innerHTML = t.blitzTimeout.replace('{correct}', correct);
+          } else {
+            fb.innerText = lastIsRight ? t.feedbackCorrect : `${t.feedbackWrong} ${t.days[current.realDayIndex].name}`;
+          }
+        }
+      }
     }
 
     function renderQuestion() {
       answered = false;
       current = generateDate();
-      document.getElementById('date-label').innerText = `${current.day} ${MONTHS_IT[current.month]} ${current.year}`;
       
-      // Impostazione suggerimenti (Hint)
-      const centuryDayName = DAYS[current.anchorDayIndex].name;
-      document.getElementById('hint-century').innerText = `Secolo: ${centuryDayName}`;
+      const t = i18n[lang];
       document.getElementById('hint-leap').style.display = current.leap ? 'inline-block' : 'none';
-
       document.getElementById('feedback').innerText = '';
       document.getElementById('next-btn').style.display = 'none';
 
       const container = document.getElementById('buttons-container');
       container.innerHTML = '';
-      DAYS.forEach((item, idx) => {
+      t.days.forEach((item, idx) => {
         const btn = document.createElement('button');
         btn.className = 'btn-day';
         btn.innerHTML = `<span>${item.name}</span><span class="shortcut-hint">${item.key}</span>`;
         btn.onclick = () => checkAnswer(idx);
         container.appendChild(btn);
       });
+      
+      updateUI();
     }
 
     function checkAnswer(chosenIdx) {
       if (answered) return;
       answered = true;
       total++;
+      lastIsRight = (chosenIdx === current.realDayIndex);
 
-      const isRight = (chosenIdx === current.realDayIndex);
-      if (isRight) {
-        correct++;
-        streak++;
+      if (lastIsRight) {
+        correct++; streak++;
         soundSuccess();
         if (navigator.vibrate) navigator.vibrate(40);
       } else {
@@ -694,53 +749,35 @@
         else if (idx === chosenIdx) b.classList.add('wrong');
       });
 
+      const t = i18n[lang];
       const fb = document.getElementById('feedback');
-      fb.innerText = isRight ? "✓ Corretto!" : `✗ Errato! Era ${DAYS[current.realDayIndex].name}`;
-      fb.style.color = isRight ? "var(--success)" : "var(--danger)";
+      fb.innerText = lastIsRight ? t.feedbackCorrect : `${t.feedbackWrong} ${t.days[current.realDayIndex].name}`;
+      fb.style.color = lastIsRight ? "var(--success)" : "var(--danger)";
 
       if (mode === 'blitz') {
-        if (blitzTimeLeft > 0) {
-          setTimeout(() => { if (blitzTimeLeft > 0) renderQuestion(); }, 400);
-        }
+        if (blitzTimeLeft > 0) setTimeout(() => { if (blitzTimeLeft > 0) renderQuestion(); }, 400);
       } else {
-        const nextBtn = document.getElementById('next-btn');
-        nextBtn.innerText = "Data Successiva → (o Spazio)";
-        nextBtn.style.display = 'block';
+        document.getElementById('next-btn').style.display = 'block';
       }
     }
 
     function nextQuestion() {
-      if (mode === 'blitz' && blitzTimeLeft <= 0) {
-        startBlitz();
-      } else {
-        renderQuestion();
-      }
+      if (mode === 'blitz' && blitzTimeLeft <= 0) startBlitz();
+      else renderQuestion();
     }
 
-    function openCheatSheet() {
-      document.getElementById('modal-cheat').style.display = 'flex';
-    }
+    function openCheatSheet() { document.getElementById('modal-cheat').style.display = 'flex'; }
+    function closeCheatSheet() { document.getElementById('modal-cheat').style.display = 'none'; }
 
-    function closeCheatSheet() {
-      document.getElementById('modal-cheat').style.display = 'none';
-    }
-
-    // Keyboard support (Solo Numeri e Spazio)
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeCheatSheet();
-
-      if (e.code === 'Space' && answered && mode !== 'blitz') {
-        e.preventDefault();
-        nextQuestion();
-        return;
-      }
-
+      if (e.code === 'Space' && answered && mode !== 'blitz') { e.preventDefault(); nextQuestion(); return; }
       const num = parseInt(e.key);
-      if (!isNaN(num) && num >= 1 && num <= 7 && !answered) {
-        checkAnswer(num - 1);
-      }
+      if (!isNaN(num) && num >= 1 && num <= 7 && !answered) checkAnswer(num - 1);
     });
 
+    // Inizializza lingua e prima domanda
+    updateUI();
     renderQuestion();
   </script>
 </body>
