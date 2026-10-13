@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -389,13 +389,13 @@
 
   <div class="header">
     <div class="title-group">
-      <button class="icon-btn" id="lang-toggle" onclick="toggleLang()" style="margin-right: 4px; font-size: 1.2rem;">🇮🇹</button>
+      <button class="icon-btn" id="lang-toggle" onclick="toggleLang()" style="margin-right: 4px; font-size: 1.2rem;" title="Switch Language">🇮🇹</button>
       <span class="logo-text">Doomsday Trainer</span>
     </div>
     <div class="actions">
-      <button class="icon-btn" id="hint-toggle" onclick="toggleHints()">💡</button>
-      <button class="icon-btn" id="sound-toggle" onclick="toggleAudio()">🔊</button>
-      <button class="icon-btn" onclick="openCheatSheet()">📖</button>
+      <button class="icon-btn" id="hint-toggle" onclick="toggleHints()" title="Hints">💡</button>
+      <button class="icon-btn" id="sound-toggle" onclick="toggleAudio()" title="Sound">🔊</button>
+      <button class="icon-btn" onclick="openCheatSheet()" title="Cheat Sheet">📖</button>
     </div>
   </div>
 
@@ -544,7 +544,9 @@
       }
     };
 
-    let lang = 'it';
+    // Imposta la lingua predefinita su Inglese
+    let lang = 'en';
+    
     let mode = 'classic';
     let total = 0;
     let correct = 0;
@@ -581,7 +583,12 @@
     function soundFail() { playTone(220, 'triangle', 0.25); }
 
     function toggleAudio() { soundEnabled = !soundEnabled; document.getElementById('sound-toggle').innerText = soundEnabled ? '🔊' : '🔇'; }
-    function toggleLang() { lang = lang === 'it' ? 'en' : 'it'; updateUI(); }
+    
+    function toggleLang() { 
+      lang = lang === 'it' ? 'en' : 'it'; 
+      document.documentElement.lang = lang;
+      updateUI(); 
+    }
     
     function toggleHints() {
       hintsEnabled = !hintsEnabled;
@@ -660,7 +667,10 @@
 
     function updateUI() {
       const t = i18n[lang];
-      document.getElementById('lang-toggle').innerText = t.flag;
+      
+      // Mostra la bandiera della lingua OPPOSTA (Target) per rendere chiaro cosa succede cliccando
+      const targetLang = lang === 'it' ? 'en' : 'it';
+      document.getElementById('lang-toggle').innerText = i18n[targetLang].flag;
       
       document.getElementById('mode-classic').innerText = t.modeClassic;
       document.getElementById('mode-modern').innerText = t.modeModern;
@@ -686,7 +696,6 @@
         document.getElementById('hint-century').innerText = `${t.hintCentury} ${t.days[current.anchorDayIndex].name}`;
         document.getElementById('hint-leap').innerText = t.hintLeap;
 
-        // Aggiorna solo il testo dei pulsanti esistenti (senza distruggere lo stato corretto/sbagliato)
         document.querySelectorAll('.btn-day span:first-child').forEach((span, idx) => {
           span.innerText = t.days[idx].name;
         });
