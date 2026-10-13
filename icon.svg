@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#090a10" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  <!-- Sfondo -->
+  <rect width="512" height="512" rx="120" fill="url(#glow)"/>
+  
+  <!-- Corpo del Calendario -->
+  <rect x="136" y="160" width="240" height="220" rx="24" fill="#161a2c" stroke="#6366f1" stroke-width="16"/>
+  <line x1="136" y1="230" x2="376" y2="230" stroke="#6366f1" stroke-width="16"/>
+  
+  <!-- Anelli del Calendario -->
+  <rect x="180" y="120" width="28" height="64" rx="14" fill="#a5b4fc"/>
+  <rect x="304" y="120" width="28" height="64" rx="14" fill="#a5b4fc"/>
+  
+  <!-- Lettera D centrale -->
+  <text x="256" y="350" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-weight="900" font-size="110" fill="#10b981" text-anchor="middle">D</text>
+</svg>
+

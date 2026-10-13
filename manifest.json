@@ -1,0 +1,16 @@
+{
+  "name": "Doomsday Trainer",
+  "short_name": "Doomsday",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#090a10",
+  "theme_color": "#0b0d17",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
